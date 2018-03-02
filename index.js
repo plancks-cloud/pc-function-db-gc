@@ -55,7 +55,9 @@ class SimpleHttpResponder {
         const newObject = {
           name: r,
           value: SimpleHttpResponder.getField(row, r),
-          excludeFromIndexes: true,
+        }
+        if (newObject.name !== req.body.index) {
+          newObject.excludeFromIndexes = true
         }
         subEntity.push(newObject)
       }

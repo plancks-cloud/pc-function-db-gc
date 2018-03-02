@@ -50,32 +50,6 @@ class SimpleHttpResponder {
       }
       subEntity.push(newObject)
 
-      //   {
-      //     name: 'capacity',
-      //     value: req.body.currentPlayers,
-      //     excludeFromIndexes: true,
-      //   },
-      //   {
-      //     name: 'maxPlayers',
-      //     value: req.body.maxPlayers,
-      //     excludeFromIndexes: true,
-      //   },
-      //   {
-      //     name: 'friendlyName',
-      //     value: req.body.friendlyName,
-      //     excludeFromIndexes: true,
-      //   },
-      //   {
-      //     name: 'joinUrl',
-      //     value: req.body.joinUrl,
-      //     excludeFromIndexes: true,
-      //   },
-      //   {
-      //     name: 'lastUpdate',
-      //     value: new Date().getTime(),
-      //   },
-      // ]
-
       const entity = {
         key: key,
         data: subEntity

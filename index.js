@@ -22,9 +22,9 @@ exports.handle = (req, res) => {
   if (req.method == "POST") {
     return SimpleHttpResponder.handlePost(req, res)
   }
-  // if (req.method == "GET") {
-  //   return SimpleHttpResponder.handleGet(req, res)
-  // }
+  if (req.method == "GET") {
+    return SimpleHttpResponder.handleGet(req, res)
+  }
 }
 
 class SimpleHttpResponder {
@@ -87,21 +87,21 @@ class SimpleHttpResponder {
     
     }
 
-  // static handleGet(req, res) {
-  //   const query = datastore
-  //     .createQuery('capacity')
-  //   datastore.runQuery(query)
-  //     .then(results => {
-  //       res.writeHead(200, {
-  //         "Content-type": "Application/json"
-  //       })
-  //       res.end(JSON.stringify(results[0]))
-  //       return Promise.resolve()
-  //     })
-  //     .catch(erro => {
-  //       res.status(500).send(erro)
-  //       return Promise.resolve()
-  //     })
-  // }
+  static handleGet(req, res) {
+    const query = datastore
+      .createQuery(req.body.collection)
+    datastore.runQuery(query)
+      .then(results => {
+        res.writeHead(200, {
+          "Content-type": "Application/json"
+        })
+        res.end(JSON.stringify(results[0]))
+        return Promise.resolve()
+      })
+      .catch(erro => {
+        res.status(500).send(erro)
+        return Promise.resolve()
+      })
+  }
 
 }

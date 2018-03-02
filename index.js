@@ -8,6 +8,15 @@ const OK_JSON = JSON.stringify({
   ok: true
 })
 
+function fancyOk() {
+  const msg = {
+    ok: true,
+    signature: new Date()
+  }
+  return JSON.stringify(msg)
+}
+
+
 exports.handle = (req, res) => {
 
   if (req.method == "POST") {
@@ -38,6 +47,7 @@ class SimpleHttpResponder {
     }
     */
 
+    const results = []
     for (const row of req.body.rows) {
       const key = datastore.key([req.body.collection, SimpleHttpResponder.getField(row, req.body.index)])
       const subEntity = []
@@ -47,31 +57,35 @@ class SimpleHttpResponder {
           value: SimpleHttpResponder.getField(row, r),
           excludeFromIndexes: true,
         }
+        subEntity.push(newObject)
       }
-      subEntity.push(newObject)
-
       const entity = {
         key: key,
         data: subEntity
       }
-
-      return datastore.save(entity)
-        .then(() => {
-          res.writeHead(200, {
-            "Content-type": "Application/json"
-          })
-          res.end(OK_JSON)
-          return Promise.resolve()
-        })
-        .catch((err) => {
-          console.error(err)
-          res.status(500).send(err.message)
-        })
+      SimpleHttpResponder.save(entity)
 
     }
 
+    res.writeHead(200, {
+      "Content-type": "Application/json"
+    })
+    res.end(fancyOk)
+    return Promise.resolve()
+
 
   }
+
+    static save(entity) { 
+      datastore.save(entity)
+      .then(() => {
+
+      })
+      .catch((err) => {
+
+      })
+    
+    }
 
   // static handleGet(req, res) {
   //   const query = datastore

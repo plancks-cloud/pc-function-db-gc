@@ -91,7 +91,7 @@ class SimpleHttpResponder {
 
   static handleGet(req, res) {
     const query = datastore
-      .createQuery(req.body.collection)
+      .createQuery(req.query.collection)
     datastore.runQuery(query)
       .then(results => {
         res.writeHead(200, {

@@ -9,15 +9,23 @@ const OK_JSON = JSON.stringify({
 })
 
 function fancyOk() {
-  const msg = {
+  return JSON.stringify({
     ok: true,
     signature: new Date()
-  }
-  return JSON.stringify(msg)
+  })
 }
 
-
 exports.handle = (req, res) => {
+
+  if (req.method == "OPTIONS") {
+    res.writeHead(200, {
+      "Accept": "Content-type"
+    })
+    res.end(fancyOk)
+    return Promise.resolve()
+
+  }
+
 
   if (req.method == "POST") {
     return SimpleHttpResponder.handlePost(req, res)
@@ -78,16 +86,16 @@ class SimpleHttpResponder {
 
   }
 
-    static save(entity) { 
-      datastore.save(entity)
+  static save(entity) {
+    datastore.save(entity)
       .then(() => {
 
       })
       .catch((err) => {
 
       })
-    
-    }
+
+  }
 
   static handleGet(req, res) {
     const query = datastore

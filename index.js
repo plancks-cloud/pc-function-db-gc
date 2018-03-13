@@ -65,7 +65,7 @@ class SimpleHttpResponder {
           name: r,
           value: SimpleHttpResponder.getField(row, r),
         }
-        if (newObject.name !== req.body.index) {
+        if (newObject.name !== req.body.index && SimpleHttpResponder.notIn(newObject.name, req.body.indexes)) {
           newObject.excludeFromIndexes = true
         }
         subEntity.push(newObject)
@@ -85,6 +85,19 @@ class SimpleHttpResponder {
     return Promise.resolve()
 
 
+  }
+
+  static notIn(v, arr) {
+    if (!arr || !v) {
+      return true
+    }
+
+    for (const i of arr) {
+      if (i === v) {
+        return false
+      }
+    }
+    return true
   }
 
   static save(entity) {

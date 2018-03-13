@@ -46,8 +46,9 @@ class SimpleHttpResponder {
     /*
     Expects:
     body = {
-      collection: "collectionName"
-      index: "idFieldName"
+      collection: "collectionName",
+      index: "idFieldName",
+      indexes: [], //TODO
       rows = [
         {field: value},
         {}

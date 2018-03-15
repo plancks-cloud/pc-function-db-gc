@@ -4,12 +4,9 @@ const Datastore = require('@google-cloud/datastore')
 const datastore = Datastore()
 const uuid = require('uuid')
 
-const OK_JSON = JSON.stringify({
-  ok: true
-})
 
 function fancyOk() {
-  return JSON.stringify({
+return JSON.stringify({
     ok: true,
     signature: new Date()
   })
@@ -35,11 +32,29 @@ exports.handle = (req, res) => {
   }
 }
 
-class SimpleHttpResponder {
-
+class FieldUtils {
   static getField(obj, fieldName) {
     return obj[fieldName]
   }
+
+}
+
+class DBUtils {
+
+  static save(entity) {
+    datastore.save(entity)
+      .then(() => {
+
+      })
+      .catch((err) => {
+
+      })
+  }
+
+}
+
+class SimpleHttpResponder {
+
 
   static handlePost(req, res) {
 
@@ -57,24 +72,26 @@ class SimpleHttpResponder {
     */
 
     const results = []
+
     for (const row of req.body.rows) {
-      const key = datastore.key([req.body.collection, SimpleHttpResponder.getField(row, req.body.index)])
+
+      const key = datastore.key([req.body.collection, FieldUtils.getField(row, req.body.index)])
       const subEntity = []
-      for (var r in row) {
+      for (const r of row) {
         const newObject = {
           name: r,
-          value: SimpleHttpResponder.getField(row, r),
+          value: FieldUtils.getField(row, r),
         }
         if (newObject.name !== req.body.index && SimpleHttpResponder.notIn(newObject.name, req.body.indexes)) {
           newObject.excludeFromIndexes = true
         }
         subEntity.push(newObject)
       }
-      const entity = {
+
+      DBUtils.save({
         key: key,
         data: subEntity
-      }
-      SimpleHttpResponder.save(entity)
+      })
 
     }
 
@@ -88,32 +105,24 @@ class SimpleHttpResponder {
   }
 
   static notIn(v, arr) {
+
     if (!arr || !v) {
       return true
     }
 
-    for (const i of arr) {
-      if (i === v) {
-        return false
-      }
+    const index = arr.indexOf(v)
+    if (indexOf == -1) {
+      return true
     }
-    return true
-  }
-
-  static save(entity) {
-    datastore.save(entity)
-      .then(() => {
-
-      })
-      .catch((err) => {
-
-      })
+    return false
 
   }
 
   static handleGet(req, res) {
+
     const query = datastore
       .createQuery(req.query.collection)
+
     datastore.runQuery(query)
       .then(results => {
         res.writeHead(200, {
@@ -126,6 +135,7 @@ class SimpleHttpResponder {
         res.status(500).send(erro)
         return Promise.resolve()
       })
+
   }
 
 }

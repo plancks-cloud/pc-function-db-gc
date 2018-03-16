@@ -77,7 +77,7 @@ class SimpleHttpResponder {
 
       const key = datastore.key([req.body.collection, FieldUtils.getField(row, req.body.index)])
       const subEntity = []
-      for (const r of row) {
+      for (var r in row) {
         const newObject = {
           name: r,
           value: FieldUtils.getField(row, r),
@@ -109,12 +109,7 @@ class SimpleHttpResponder {
     if (!arr || !v) {
       return true
     }
-
-    const index = arr.indexOf(v)
-    if (indexOf == -1) {
-      return true
-    }
-    return false
+    return arr.indexOf(v) == -1
 
   }
 

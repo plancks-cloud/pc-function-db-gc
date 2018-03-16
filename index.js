@@ -105,11 +105,7 @@ class SimpleHttpResponder {
   }
 
   static notIn(v, arr) {
-
-    if (!arr || !v) {
-      return true
-    }
-    return arr.indexOf(v) == -1
+    return !arr || !v || arr.indexOf(v)
 
   }
 

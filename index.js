@@ -110,6 +110,13 @@ class SimpleHttpResponder {
         datastore.runQuery(query)
             .then(results => {
                 let arr = results[0]
+                if (arr) {
+                    if (arr.length == 0) {
+                        console.log("Found 0 contracts.")
+                        return Promise.resolve()
+                    }
+                }
+
                 console.log("Got to handleGet: got results ")
                 console.log(results)
                 for (const a of arr) {

@@ -49,8 +49,17 @@ class DBUtils {
         datastore.runQuery(query)
             .then(results => {
                 let arr = results[0]
+                if (arr) {
+                    if (arr.length == 0) {
+                        console.log("Found 0 bids.")
+                        return Promise.resolve()
+                    } else {
+                        console.log("Found " + arr.length + " bids")
+                    }
+                }
                 for (const a of arr) {
                     if (a.contractId === contractId) {
+                        console.log("Found a bid to delete")
                         DBUtils.deleteByKey(COL, a._id)
                     }
                 }
@@ -70,8 +79,17 @@ class DBUtils {
         datastore.runQuery(query)
             .then(results => {
                 let arr = results[0]
+                if (arr) {
+                    if (arr.length == 0) {
+                        console.log("Found 0 wins.")
+                        return Promise.resolve()
+                    } else {
+                        console.log("Found " + arr.length + " wins")
+                    }
+                }
                 for (const a of arr) {
                     if (a.contractId === contractId) {
+                        console.log("Found a win to delete")
                         DBUtils.deleteByKey(COL, a._id)
                     }
                 }
@@ -119,7 +137,6 @@ class SimpleHttpResponder {
                 }
 
                 console.log("Got to handleGet: got results ")
-                console.log(arr)
                 for (const a of arr) {
                     let now = new Date()
                     if (now > a.runUntil) {

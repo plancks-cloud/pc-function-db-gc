@@ -6,127 +6,66 @@ const uuid = require('uuid')
 
 
 function fancyOk() {
-return JSON.stringify({
-    ok: true,
-    signature: new Date()
-  })
+    return JSON.stringify({
+        ok: true,
+        signature: new Date()
+    })
 }
 
 exports.handle = (req, res) => {
 
-  if (req.method == "OPTIONS") {
-    res.writeHead(200, {
-      "Accept": "Content-type"
-    })
-    res.end(fancyOk)
-    return Promise.resolve()
+    if (req.method == "OPTIONS") {
+        res.writeHead(200, {
+            "Accept": "Content-type"
+        })
+        res.end(fancyOk)
+        return Promise.resolve()
+    }
 
-  }
-
-
-  if (req.method == "POST") {
-    return SimpleHttpResponder.handlePost(req, res)
-  }
-  if (req.method == "GET") {
-    return SimpleHttpResponder.handleGet(req, res)
-  }
-}
-
-class FieldUtils {
-  static getField(obj, fieldName) {
-    return obj[fieldName]
-  }
+    if (req.method == "GET") {
+        return SimpleHttpResponder.handleGet(req, res)
+    }
 
 }
 
 class DBUtils {
 
-  static save(entity) {
-    datastore.save(entity)
-      .then(() => {
-
-      })
-      .catch((err) => {
-
-      })
-  }
+    static cleanup(contractId) {
+        console.log("123: Going to cleanup: " + contractId)
+    }
 
 }
 
 class SimpleHttpResponder {
 
+    static handleGet(req, res) {
 
-  static handlePost(req, res) {
+        console.log("Got to handleGet")
 
-    /*
-    Expects:
-    body = {
-      collection: "collectionName",
-      index: "idFieldName",
-      indexes: [], //TODO
-      rows = [
-        {field: value},
-        {}
-      ]
-    }
-    */
+        const query = datastore.createQuery("contract")
 
-    const results = []
+        datastore.runQuery(query)
+            .then(results => {
+                let arr = results[0]
+                console.log("Got to handleGet: got results ")
+                console.log(results)
+                for (const a of arr) {
+                    let now = new Date()
+                    if (now > a.runUntil) {
+                        DBUtils.cleanup(a._id)
+                    }
+                }
 
-    for (const row of req.body.rows) {
+                return Promise.resolve()
+            })
+            .catch(erro => {
+                res.status(500).send(erro)
+                return Promise.resolve()
+            })
 
-      const key = datastore.key([req.body.collection, FieldUtils.getField(row, req.body.index)])
-      const subEntity = []
-      for (var r in row) {
-        const newObject = {
-          name: r,
-          value: FieldUtils.getField(row, r),
-        }
-        if (newObject.name !== req.body.index && SimpleHttpResponder.notIn(newObject.name, req.body.indexes)) {
-          newObject.excludeFromIndexes = true
-        }
-        subEntity.push(newObject)
-      }
 
-      DBUtils.save({
-        key: key,
-        data: subEntity
-      })
+        return Promise.resolve()
 
     }
-
-    res.writeHead(200, {
-      "Content-type": "Application/json"
-    })
-    res.end(fancyOk)
-    return Promise.resolve()
-
-
-  }
-
-  static notIn(v, arr) {
-    return !arr || !v || arr.indexOf(v)
-
-  }
-
-  static handleGet(req, res) {
-
-    const query = datastore
-      .createQuery(req.query.collection)
-
-    datastore.runQuery(query)
-      .then(results => {
-        res.writeHead(200, {
-          "Content-type": "Application/json"
-        })
-        res.end(JSON.stringify(results[0]))
-        return Promise.resolve()
-      })
-      .catch(erro => {
-        res.status(500).send(erro)
-        return Promise.resolve()
-      })
-
-  }
 
 }

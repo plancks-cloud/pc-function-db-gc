@@ -106,7 +106,6 @@ class SimpleHttpResponder {
         console.log("Got to handleGet")
 
         const query = datastore.createQuery("Contract")
-
         datastore.runQuery(query)
             .then(results => {
                 let arr = results[0]
@@ -114,18 +113,19 @@ class SimpleHttpResponder {
                     if (arr.length == 0) {
                         console.log("Found 0 contracts.")
                         return Promise.resolve()
+                    } else {
+                        console.log("Found " + arr.length + " contracts")
                     }
                 }
 
                 console.log("Got to handleGet: got results ")
-                console.log(results)
+                console.log(arr)
                 for (const a of arr) {
                     let now = new Date()
                     if (now > a.runUntil) {
                         DBUtils.cleanup(a._id)
                     }
                 }
-                res.status(200).send(fancyOk())
                 return Promise.resolve()
             })
             .catch(erro => {

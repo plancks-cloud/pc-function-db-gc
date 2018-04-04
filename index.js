@@ -42,7 +42,7 @@ class SimpleHttpResponder {
 
         console.log("Got to handleGet")
 
-        const query = datastore.createQuery("contract")
+        const query = datastore.createQuery("Contract")
 
         datastore.runQuery(query)
             .then(results => {

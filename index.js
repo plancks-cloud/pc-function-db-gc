@@ -32,7 +32,70 @@ class DBUtils {
 
     static cleanup(contractId) {
         console.log("123: Going to cleanup: " + contractId)
+        DBUtils.deleteContract(contractId)
+        DBUtils.deleteBidsByContractId(contractId)
+        DBUtils.deleteWinsByContractId(contractId)
     }
+
+    static deleteContract(contractId) {
+        DBUtils.deleteByKey("Contract", contractId)
+    }
+
+    static deleteBidsByContractId(contractId) {
+        const COL = "Bid"
+        const query = datastore
+            .createQuery(COL)
+
+        datastore.runQuery(query)
+            .then(results => {
+                let arr = results[0]
+                for (const a of arr) {
+                    if (a.contractId === contractId) {
+                        DBUtils.deleteByKey(COL, a._id)
+                    }
+                }
+                return Promise.resolve()
+            })
+            .catch(erro => {
+                res.status(500).send(erro)
+                return Promise.resolve()
+            })
+    }
+
+    static deleteWinsByContractId(contractId) {
+        const COL = "Win"
+        const query = datastore
+            .createQuery(COL)
+
+        datastore.runQuery(query)
+            .then(results => {
+                let arr = results[0]
+                for (const a of arr) {
+                    if (a.contractId === contractId) {
+                        DBUtils.deleteByKey(COL, a._id)
+                    }
+                }
+                return Promise.resolve()
+            })
+            .catch(erro => {
+                res.status(500).send(erro)
+                return Promise.resolve()
+            })
+    }
+
+
+    static deleteByKey(col, id) {
+        const taskKey = datastore.key([col, id]);
+        datastore.delete(taskKey)
+            .then(() => {
+                console.log(`Deleted a ${col} with ID: ${id}.`);
+            })
+            .catch(err => {
+                console.error('ERROR:', err);
+            });
+
+    }
+
 
 }
 

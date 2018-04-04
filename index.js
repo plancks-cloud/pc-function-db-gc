@@ -55,7 +55,7 @@ class SimpleHttpResponder {
                         DBUtils.cleanup(a._id)
                     }
                 }
-
+                res.status(200).send(fancyOk())
                 return Promise.resolve()
             })
             .catch(erro => {
@@ -64,6 +64,7 @@ class SimpleHttpResponder {
             })
 
 
+        res.status(200).send(fancyOk())
         return Promise.resolve()
 
     }

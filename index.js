@@ -59,7 +59,7 @@ class DBUtils {
                 }
                 for (const a of arr) {
                     if (a.contractId === contractId) {
-                        console.log("Found a bid to delete")
+                        // console.log("Found a bid to delete")
                         DBUtils.deleteByKey(COL, a._id)
                     }
                 }
@@ -89,7 +89,7 @@ class DBUtils {
                 }
                 for (const a of arr) {
                     if (a.contractId === contractId) {
-                        console.log("Found a win to delete")
+                        // console.log("Found a win to delete")
                         DBUtils.deleteByKey(COL, a._id)
                     }
                 }
@@ -121,7 +121,7 @@ class SimpleHttpResponder {
 
     static handleGet(req, res) {
 
-        console.log("Got to handleGet")
+        // console.log("Got to handleGet")
 
         const query = datastore.createQuery("Contract")
         datastore.runQuery(query)
@@ -138,7 +138,7 @@ class SimpleHttpResponder {
 
                 console.log("Got to handleGet: got results ")
                 for (const a of arr) {
-                    let now = new Date()
+                    let now = new Date() + (1000 * 300)
                     if (now > a.runUntil) {
                         DBUtils.cleanup(a._id)
                     }

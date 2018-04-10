@@ -138,9 +138,12 @@ class SimpleHttpResponder {
 
                 console.log("Got to handleGet: got results ")
                 for (const a of arr) {
+
                     let now = new Date()
-                    let dies = a.timestamp + 1000 * (a.secondsToLive + 300)
-l                    if (now > dies) {
+                    let dies = a.timestamp + (1000 * (a.secondsToLive + 300))
+
+
+                    if (now > dies) {
                         DBUtils.cleanup(a._id)
                     }
                 }
